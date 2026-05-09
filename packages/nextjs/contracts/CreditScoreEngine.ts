@@ -6,10 +6,7 @@
  * Non-local deployments live in REMOTE below keyed by chainId.
  * Import: `import { CreditScoreEngine } from "~~/contracts/CreditScoreEngine";`
  */
-
 import type { ContractDeployment } from "~~/utils/contract";
-
-
 
 export const CreditScoreEngineABI = [
   // ── submitFactors ────────────────────────────────────────────────────
@@ -18,10 +15,10 @@ export const CreditScoreEngineABI = [
     name: "submitFactors",
     inputs: [
       { name: "paymentHistory", type: "bytes32", internalType: "externalEuint64" },
-      { name: "dti",            type: "bytes32", internalType: "externalEuint64" },
-      { name: "creditAge",      type: "bytes32", internalType: "externalEuint64" },
-      { name: "utilization",    type: "bytes32", internalType: "externalEuint64" },
-      { name: "inputProof",     type: "bytes",   internalType: "bytes" },
+      { name: "dti", type: "bytes32", internalType: "externalEuint64" },
+      { name: "creditAge", type: "bytes32", internalType: "externalEuint64" },
+      { name: "utilization", type: "bytes32", internalType: "externalEuint64" },
+      { name: "inputProof", type: "bytes", internalType: "bytes" },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -63,8 +60,8 @@ export const CreditScoreEngineABI = [
     type: "function",
     name: "meetsThreshold",
     inputs: [
-      { name: "borrower",  type: "address", internalType: "address" },
-      { name: "threshold", type: "uint64",  internalType: "uint64" },
+      { name: "borrower", type: "address", internalType: "address" },
+      { name: "threshold", type: "uint64", internalType: "uint64" },
     ],
     outputs: [{ name: "", type: "bytes32", internalType: "ebool" }],
     stateMutability: "nonpayable",
@@ -89,7 +86,7 @@ export const CreditScoreEngineABI = [
     name: "isLenderAuthorized",
     inputs: [
       { name: "borrower", type: "address", internalType: "address" },
-      { name: "lender",   type: "address", internalType: "address" },
+      { name: "lender", type: "address", internalType: "address" },
     ],
     outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
@@ -113,7 +110,7 @@ export const CreditScoreEngineABI = [
     name: "LenderAuthorized",
     inputs: [
       { name: "borrower", type: "address", indexed: true },
-      { name: "lender",   type: "address", indexed: true },
+      { name: "lender", type: "address", indexed: true },
     ],
   },
   {
@@ -121,7 +118,7 @@ export const CreditScoreEngineABI = [
     name: "LenderRevoked",
     inputs: [
       { name: "borrower", type: "address", indexed: true },
-      { name: "lender",   type: "address", indexed: true },
+      { name: "lender", type: "address", indexed: true },
     ],
   },
   // ── Errors ─────────────────────────────────────────────────────────────
@@ -139,7 +136,7 @@ export const CreditScoreEngineABI = [
     type: "error",
     name: "NotAuthorized",
     inputs: [
-      { name: "lender",   type: "address" },
+      { name: "lender", type: "address" },
       { name: "borrower", type: "address" },
     ],
   },
@@ -169,9 +166,9 @@ const REMOTE: Record<number, ContractDeployment> = {
   11155111: {
     address: "0x02DF09970f298c26B703637A863c98D850258a70",
     abi: CreditScoreEngineABI,
+    deployedOnBlock: 0,
   },
 };
-
 
 export const CreditScoreEngine = {
   ...REMOTE,
