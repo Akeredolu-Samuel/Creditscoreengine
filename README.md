@@ -1,120 +1,159 @@
-# FHEVM React Template
+# Confidential Credit Score Engine 🔐
 
-A minimal React + Foundry template for building FHEVM-enabled dApps. Ships with `FHECounter.sol` (a trivial encrypted counter) and a Next.js frontend that reads, writes, and decrypts its value.
+> **FHE-powered credit bureau** — prove creditworthiness without revealing raw financial history.
+>
+> Built for the **Zama Developer Program – Builder Track 2026** using fhevm-solidity 0.11.1 and @zama-fhe/react-sdk v3.
 
-FHEVM (Fully Homomorphic Encryption Virtual Machine) lets smart contracts compute on encrypted data. Inputs, storage, and ciphertext handles stay private; only authorized callers can decrypt.
+---
 
-## Stack
+## Architecture
 
-- **Contracts** — Foundry, Solidity 0.8.27, [forge-fhevm](https://github.com/zama-ai/forge-fhevm) for host contracts + testing helpers
-- **Frontend** — Next.js 15 (App Router), React 19, wagmi, viem, RainbowKit, Tailwind + daisyUI
-- **FHE SDK** — `@zama-fhe/sdk` + `@zama-fhe/react-sdk` v3; `RelayerCleartext` on localhost, `RelayerWeb` on Sepolia
-
-## Prerequisites
-
-Node.js ≥ 20, pnpm, [Foundry](https://book.getfoundry.sh/getting-started/installation) (`forge` / `anvil` / `cast`), `jq`, MetaMask.
-
-## Quick start
-
-```bash
-pnpm install            # node deps + husky + regenerate ABIs
-pnpm contracts:install  # forge soldeer install — required before `pnpm chain`
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Browser (Borrower)                                             │
+│  ┌──────────────────┐  fhevmjs encrypt()  ┌──────────────────┐ │
+│  │  BorrowerForm    │ ─────────────────►  │ euint64 handles  │ │
+│  │  (plain sliders) │                     │ + ZK inputProof  │ │
+│  └──────────────────┘                     └────────┬─────────┘ │
+└───────────────────────────────────────────────────┼────────────┘
+                                                     │ submitFactors()
+                                                     ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Sepolia – CreditScoreEngine.sol (fhevm-solidity 0.11.1)       │
+│                                                                 │
+│  FHE.fromExternal()  → decrypt checks proof on-chain           │
+│  _computeScore()     → ph×40 + (100-dti)×30 + ca×15 + …      │
+│                         All ops are TFHE-rs ciphertext arith    │
+│  FHE.allow(score, borrower)  – borrower can self-decrypt       │
+│  authorizeLender()   → FHE.allow(score, lender)               │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │ requestScore() returns euint64 handle
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Zama KMS Gateway (Sepolia)                                     │
+│  useUserDecrypt() — EIP-712 signed, KMS checks ACL then        │
+│  returns plaintext only to the authorised address               │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Local
+---
 
-```bash
-# Terminal 1 — anvil + FHEVM cleartext host + FHECounter
-pnpm chain
+## Score Formula
 
-# Terminal 2 — frontend (http://localhost:3000)
-pnpm start
+```
+score = paymentHistory × 40
+      + (100 − dti)    × 30
+      + creditAge      × 15
+      + (100 − util)   × 15
+
+Range: 0 – 10 000   (no on-chain division needed)
 ```
 
-Add the local network to MetaMask: RPC `http://127.0.0.1:8545`, chain id `31337`. Import any anvil dev account (e.g. private key `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`, address `0xf39F…2266`, 10 000 ETH).
+All four multiplications and additions happen **entirely in FHE** — the EVM only ever touches ciphertexts.
 
-To redeploy `FHECounter` without restarting anvil: `pnpm deploy:localhost`.
+---
 
-### Sepolia
+## Project Structure
 
-```bash
-cp .env.example .env.local   # then fill in the three values below
+```
+credit-score-engine/
+├── packages/
+│   ├── foundry/
+│   │   ├── src/
+│   │   │   └── CreditScoreEngine.sol       ← Main FHE contract
+│   │   ├── script/
+│   │   │   └── DeployCreditScoreEngine.s.sol
+│   │   └── test/
+│   │       └── CreditScoreEngine.t.sol
+│   └── nextjs/
+│       ├── app/
+│       │   ├── page.tsx                    ← Dashboard
+│       │   ├── borrower/page.tsx           ← Submit factors
+│       │   ├── lender/page.tsx             ← Request & decrypt score
+│       │   └── authorize/page.tsx          ← Manage lender access
+│       ├── contracts/
+│       │   └── CreditScoreEngine.ts        ← ABI + deployment registry
+│       └── hooks/credit-score/
+│           └── useCreditScoreEngine.tsx    ← All contract interactions
+└── docs/
+    ├── how-it-works.md
+    └── video-script.md
 ```
 
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Node ≥ 20, pnpm ≥ 10
+- Foundry installed (`foundryup`)
+- MetaMask pointed at **Sepolia**
+
+### Install
+
 ```bash
-DEPLOYER_PRIVATE_KEY=0x...                         # deployer funded with Sepolia ETH
-SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
-ETHERSCAN_API_KEY=...                              # optional, enables --verify
+cd credit-score-engine
+pnpm install
+pnpm contracts:install   # installs Soldeer dependencies (fhevm-solidity etc.)
 ```
 
-Add an Alchemy key to `packages/nextjs/.env.local`:
+### Run tests
 
 ```bash
-NEXT_PUBLIC_ALCHEMY_API_KEY=YOUR_KEY
+pnpm test
+# or with verbosity:
+cd packages/foundry && forge test -vv
 ```
 
-Deploy + run:
+### Deploy to Sepolia
+
+1. Copy `.env.example` → `.env` and fill in `PRIVATE_KEY` + `SEPOLIA_RPC_URL` + `ETHERSCAN_API_KEY`.
+2. Run:
 
 ```bash
 pnpm deploy:sepolia
+# Under the hood:
+# forge script script/DeployCreditScoreEngine.s.sol --rpc-url sepolia --broadcast --verify
+```
+
+3. Copy the printed address into `packages/nextjs/contracts/CreditScoreEngine.ts` under key `11155111`.
+
+### Run the frontend
+
+```bash
 pnpm start
+# Opens http://localhost:3000
 ```
 
-## Scripts
+---
 
-| Command                  | What it does                                                                                 |
-| ------------------------ | -------------------------------------------------------------------------------------------- |
-| `pnpm chain`             | Anvil + FHEVM cleartext host + `FHECounter` on port 8545                                     |
-| `pnpm deploy:localhost`  | Deploys `FHECounter` to local anvil, then regenerates frontend ABIs                          |
-| `pnpm deploy:sepolia`    | Deploys to Sepolia (reads `.env.local`), then regenerates frontend ABIs                      |
-| `pnpm contracts:install` | `forge soldeer install` — fetches forge-fhevm and other contract deps                        |
-| `pnpm contracts:build`   | `forge build` in `packages/foundry`                                                          |
-| `pnpm contracts:test`    | `forge test -vv` in `packages/foundry`                                                       |
-| `pnpm generate`          | Emits `packages/nextjs/contracts/<Name>.ts` + `<Name>.local.ts` from forge broadcasts + out/ |
-| `pnpm start`             | `next dev`                                                                                   |
-| `pnpm next:build`        | Production build of the frontend                                                             |
-| `pnpm next:check-types`  | TypeScript check on the frontend                                                             |
-| `pnpm lint`              | Lint the frontend                                                                            |
-| `pnpm format`            | Prettier over the whole repo (`format:check` for no-write)                                   |
+## Environment Variables
 
-## Project structure
+| Variable | Where | Purpose |
+|---|---|---|
+| `PRIVATE_KEY` | `packages/foundry/.env` | Deployer wallet private key |
+| `SEPOLIA_RPC_URL` | `packages/foundry/.env` | Alchemy / Infura Sepolia endpoint |
+| `ETHERSCAN_API_KEY` | `packages/foundry/.env` | Contract verification |
+| `NEXT_PUBLIC_ALCHEMY_API_KEY` | `packages/nextjs/.env.local` | Frontend RPC |
+| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `packages/nextjs/.env.local` | WalletConnect |
 
-```
-fhevm-react-template/
-├── scripts/                       # chain.sh, deploy-*.sh, generateTsAbis.ts
-├── packages/foundry/              # Solidity contracts
-│   ├── src/FHECounter.sol
-│   ├── script/DeployFHECounter.s.sol
-│   └── test/FHECounter.t.sol      # inherits forge-fhevm's FhevmTest
-└── packages/nextjs/               # Frontend
-    ├── components/DappWrapperWithProviders.tsx   # wires ZamaProvider + relayer
-    ├── hooks/fhecounter-example/useFHECounterWagmi.tsx
-    ├── contracts/
-    │   ├── FHECounter.ts          # non-local (Sepolia, …) — tracked
-    │   └── FHECounter.local.ts    # chainId 31337 overlay — gitignored
-    └── utils/contract.ts          # ContractDeployment + deploymentFor()
-```
+---
 
-The per-contract `Name.ts` imports `Name.local.ts` and merges at module load, so consumer code is agnostic to which chain a deployment lives on. `postinstall` regenerates both on every `pnpm install`, including an empty stub sidecar on a fresh clone.
+## Key FHE Concepts Used
 
-## Troubleshooting
+| Concept | Usage in this project |
+|---|---|
+| `euint64` | Credit factor and score storage |
+| `FHE.fromExternal()` | Verify ZK input-proof on-chain |
+| `FHE.add / mul / sub` | Weighted score arithmetic |
+| `FHE.ge()` → `ebool` | Threshold checks without revealing score |
+| `FHE.allow()` | On-chain ACL — grant lender decrypt permission |
+| `useUserDecrypt` | Off-chain EIP-712 KMS decryption |
+| `useEncrypt` | Client-side fhevmjs encryption |
 
-- **MetaMask nonce mismatch after restarting anvil** — MetaMask → Settings → Advanced → _Clear activity tab data_.
-- **Stale view-function results** — MetaMask caches across reloads; restart the browser (not the tab).
-- **`Contract address is not a valid address`** — the relayer SDK requires EIP-55 checksummed addresses. Rerun `pnpm generate`.
-- **`pnpm install` asks for a package manager version** — the root pins `packageManager: "pnpm@10.18.3"`. `corepack prepare pnpm@10.18.3 --activate` or match locally.
-
-## FHEVM notes
-
-- **ACL is mandatory.** Every encrypted value needs `FHE.allowThis(handle)` + `FHE.allow(handle, user)` — reads silently fail without it. `FHECounter.sol` does this explicitly.
-- **Types are baked into ciphertext handles.** The frontend's `type: "euint32"` must match the contract's `externalEuint32` parameter — mismatch reverts with `InvalidType()`.
-- **Local runs cleartext mode.** Anvil hosts a `CleartextFHEVMExecutor` that mirrors every FHE op into a `plaintexts(bytes32)` mapping. No KMS, no gateway, no WASM — `RelayerCleartext` reads plaintext directly. Dev-only.
-- **Sepolia uses the real relayer.** `RelayerWeb` spins up a Web Worker and pulls FHE crypto from Zama's CDN. Needs `NEXT_PUBLIC_ALCHEMY_API_KEY`.
-
-## References
-
-[Zama Protocol docs](https://docs.zama.org/) · [`@zama-fhe/sdk`](https://github.com/zama-ai/sdk) · [forge-fhevm](https://github.com/zama-ai/forge-fhevm) · [OpenZeppelin Confidential Contracts](https://github.com/OpenZeppelin/openzeppelin-confidential-contracts) · [Discord](https://discord.com/invite/zama)
+---
 
 ## License
 
-BSD-3-Clause-Clear. See [LICENSE](LICENSE).
+BSD-3-Clause-Clear
