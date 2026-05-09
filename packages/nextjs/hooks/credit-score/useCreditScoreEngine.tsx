@@ -14,9 +14,9 @@ import { deploymentFor } from "~~/utils/contract";
 
 export interface CreditFactorInputs {
   paymentHistory: number; // 0-100
-  dti: number;            // 0-100
-  creditAge: number;      // 0-100
-  utilization: number;    // 0-100
+  dti: number; // 0-100
+  creditAge: number; // 0-100
+  utilization: number; // 0-100
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,10 +35,7 @@ export const useCreditScoreEngine = () => {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
 
-  const deployment = useMemo(
-    () => deploymentFor(CreditScoreEngine, chainId),
-    [chainId],
-  );
+  const deployment = useMemo(() => deploymentFor(CreditScoreEngine, chainId), [chainId]);
   const contractAddress = deployment?.address;
   const abi = CreditScoreEngineABI;
   const hasContract = Boolean(contractAddress);
@@ -84,10 +81,7 @@ export const useCreditScoreEngine = () => {
       refetchOnWindowFocus: false,
     },
   });
-  const myScoreHandle = useMemo(
-    () => (myScoreResult.data as string | undefined) ?? undefined,
-    [myScoreResult.data],
-  );
+  const myScoreHandle = useMemo(() => (myScoreResult.data as string | undefined) ?? undefined, [myScoreResult.data]);
 
   // ── ACL & decrypt (own score) ──────────────────────────────────────────────
   const { mutate: allow, isPending: isAllowing } = useAllow();
@@ -181,9 +175,9 @@ export const useCreditScoreEngine = () => {
         const enc = await encrypt.mutateAsync({
           values: [
             { value: BigInt(factors.paymentHistory), type: "euint64" },
-            { value: BigInt(factors.dti),            type: "euint64" },
-            { value: BigInt(factors.creditAge),      type: "euint64" },
-            { value: BigInt(factors.utilization),    type: "euint64" },
+            { value: BigInt(factors.dti), type: "euint64" },
+            { value: BigInt(factors.creditAge), type: "euint64" },
+            { value: BigInt(factors.utilization), type: "euint64" },
           ],
           contractAddress,
           userAddress: address,
@@ -266,9 +260,12 @@ export const useCreditScoreEngine = () => {
 
   // ── Check lender authorization ────────────────────────────────────────────
   const checkLenderAuth = useCallback(
-    async (borrower: `0x${string}`, lender: `0x${string}`) => {
+    async (_borrower: `0x${string}`, _lender: `0x${string}`) => {
       // Quick read via the result refetch pattern
-      return lenderScoreResult.refetch().then(() => true).catch(() => false);
+      return lenderScoreResult
+        .refetch()
+        .then(() => true)
+        .catch(() => false);
     },
     [lenderScoreResult],
   );

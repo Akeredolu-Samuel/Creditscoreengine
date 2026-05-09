@@ -31,9 +31,9 @@ The borrower opens the Borrower Form and sets sliders for:
 const enc = await encrypt.mutateAsync({
   values: [
     { value: BigInt(paymentHistory), type: "euint64" },
-    { value: BigInt(dti),            type: "euint64" },
-    { value: BigInt(creditAge),      type: "euint64" },
-    { value: BigInt(utilization),    type: "euint64" },
+    { value: BigInt(dti), type: "euint64" },
+    { value: BigInt(creditAge), type: "euint64" },
+    { value: BigInt(utilization), type: "euint64" },
   ],
   contractAddress,
   userAddress: address,
@@ -118,13 +118,13 @@ A lender can ask "does this borrower have a score ≥ 7000?" and receive an encr
 
 ## Security Properties
 
-| Property | Guarantee |
-|---|---|
-| Factor privacy | Raw values (paymentHistory, DTI, …) are never on-chain in plaintext |
-| Score privacy | Encrypted score stored on-chain; only ACL-listed addresses can decrypt |
-| Computation integrity | ZK input-proof prevents forged ciphertext injection |
-| Lender isolation | Each lender gets an independent ACL entry; revoking one doesn't affect others |
-| No trust in frontend | Even a malicious frontend can't recover plaintext — the KMS checks ACL |
+| Property              | Guarantee                                                                     |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Factor privacy        | Raw values (paymentHistory, DTI, …) are never on-chain in plaintext           |
+| Score privacy         | Encrypted score stored on-chain; only ACL-listed addresses can decrypt        |
+| Computation integrity | ZK input-proof prevents forged ciphertext injection                           |
+| Lender isolation      | Each lender gets an independent ACL entry; revoking one doesn't affect others |
+| No trust in frontend  | Even a malicious frontend can't recover plaintext — the KMS checks ACL        |
 
 ---
 

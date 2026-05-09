@@ -1,4 +1,5 @@
 # 3-Minute Video Pitch Script
+
 ## Confidential Credit Score Engine — Zama Developer Program 2026
 
 > **Tone:** Calm, confident, technically informed. Speak to both technical judges and non-technical viewers.
@@ -12,7 +13,7 @@
 >
 > That data lives in plaintext databases. It gets breached. It gets misused. And you have no control over who sees it."
 
-*(Show: news headlines about data breaches, credit bureau hacks)*
+_(Show: news headlines about data breaches, credit bureau hacks)_
 
 ---
 
@@ -20,9 +21,9 @@
 
 > "Credit scoring is a privacy nightmare. The system works by trading privacy for access. You either hand over your data — or you don't get the loan.
 >
-> But what if you could *prove* you're creditworthy, without *revealing* the data that makes you creditworthy?"
+> But what if you could _prove_ you're creditworthy, without _revealing_ the data that makes you creditworthy?"
 
-*(Show: traditional flow diagram — borrower → bureau → lender, data exposed at every step)*
+_(Show: traditional flow diagram — borrower → bureau → lender, data exposed at every step)_
 
 ---
 
@@ -34,7 +35,7 @@
 >
 > Let me show you how it works in three steps."
 
-*(Show: the dApp dashboard)*
+_(Show: the dApp dashboard)_
 
 ---
 
@@ -45,24 +46,24 @@
 >
 > fhevmjs encrypts all four values right here in the browser. What gets sent on-chain is four ciphertext handles and a zero-knowledge proof — no raw numbers."
 
-*(Show: BorrowerForm sliders → Submit button → tx confirmation)*
+_(Show: BorrowerForm sliders → Submit button → tx confirmation)_
 
 > **Step 2 — Smart contract computes the score.**
 > "The CreditScoreEngine contract receives the handles, verifies the ZK proof, then runs the weighted score formula — multiply, add, subtract — entirely on ciphertexts.
 >
 > The result is an encrypted score stored on-chain. Nobody can read it yet."
 
-*(Show: contract transaction explorer, highlight FHE op logs)*
+_(Show: contract transaction explorer, highlight FHE op logs)_
 
 > **Step 3 — Borrower authorises a lender.**
-> "I go to the Authorize page, paste my lender's address, and sign one transaction. That calls FHE dot allow — updating the Zama ACL contract so only *this* lender can decrypt *this* score."
+> "I go to the Authorize page, paste my lender's address, and sign one transaction. That calls FHE dot allow — updating the Zama ACL contract so only _this_ lender can decrypt _this_ score."
 
-*(Show: AuthorizePage → grant tx)*
+_(Show: AuthorizePage → grant tx)_
 
 > **Step 4 — Lender decrypts.**
 > "The lender enters my address, requests the score. The Zama KMS verifies the ACL entry, then decrypts — returning the final number only to the lender's browser. They see the score. Nothing else."
 
-*(Show: LenderView → score revealed → threshold badges)*
+_(Show: LenderView → score revealed → threshold badges)_
 
 ---
 
@@ -72,7 +73,7 @@
 >
 > The lender decrypts a yes or a no. They never learn your exact score. That's the power of FHE — provable properties, zero disclosure."
 
-*(Show: code snippet of `meetsThreshold` function)*
+_(Show: code snippet of `meetsThreshold` function)_
 
 ---
 
@@ -86,7 +87,7 @@
 >
 > Confidential Credit Score Engine. Prove it. Without exposing it."
 
-*(Show: logo + contract address + GitHub link)*
+_(Show: logo + contract address + GitHub link)_
 
 ---
 

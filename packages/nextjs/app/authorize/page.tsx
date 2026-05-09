@@ -31,13 +31,13 @@ export default function AuthorizePage() {
   const handleAuthorize = async () => {
     if (!addrValid) return;
     await authorizeLender(lenderAddr as `0x${string}`);
-    setAuthorized((prev) => (prev.includes(lenderAddr) ? prev : [...prev, lenderAddr]));
+    setAuthorized(prev => (prev.includes(lenderAddr) ? prev : [...prev, lenderAddr]));
     setLenderAddr("");
   };
 
   const handleRevoke = async (addr: string) => {
     await revokeLender(addr as `0x${string}`);
-    setAuthorized((prev) => prev.filter((a) => a !== addr));
+    setAuthorized(prev => prev.filter(a => a !== addr));
   };
 
   if (!isConnected) {
@@ -46,9 +46,7 @@ export default function AuthorizePage() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
           <p className="text-4xl">🔑</p>
           <h2 className="mt-4 text-xl font-bold text-white">Connect your wallet</h2>
-          <p className="mt-2 text-sm text-gray-400">
-            Only the borrower can manage lender access.
-          </p>
+          <p className="mt-2 text-sm text-gray-400">Only the borrower can manage lender access.</p>
           <div className="mt-6 flex justify-center">
             <RainbowKitCustomConnectButton />
           </div>
@@ -61,15 +59,12 @@ export default function AuthorizePage() {
     <div className="min-h-screen bg-[#0D0D0D] px-4 py-12 text-white">
       <div className="mx-auto max-w-xl">
         {/* Header */}
-        <p className="text-sm text-[#FFD208] font-semibold uppercase tracking-widest">
-          Authorization Center
-        </p>
+        <p className="text-sm text-[#FFD208] font-semibold uppercase tracking-widest">Authorization Center</p>
         <h1 className="mt-2 text-3xl font-extrabold">Manage Lender Access</h1>
         <p className="mt-2 text-gray-400 text-sm leading-relaxed">
-          Grant or revoke a lender&apos;s ability to decrypt your credit score. Your raw factors
-          are{" "}
-          <span className="text-[#FFD208]">never exposed</span> — only the composite score
-          handle is shared via on-chain ACL.
+          Grant or revoke a lender&apos;s ability to decrypt your credit score. Your raw factors are{" "}
+          <span className="text-[#FFD208]">never exposed</span> — only the composite score handle is shared via on-chain
+          ACL.
         </p>
 
         {/* Requirements check */}
@@ -84,9 +79,7 @@ export default function AuthorizePage() {
           <h2 className="font-bold text-white mb-1">Your Encrypted Score</h2>
           <p className="text-xs text-gray-500 mb-4">
             Handle:{" "}
-            <span className="font-mono text-gray-400">
-              {myScoreHandle ? myScoreHandle.slice(0, 14) + "…" : "—"}
-            </span>
+            <span className="font-mono text-gray-400">{myScoreHandle ? myScoreHandle.slice(0, 14) + "…" : "—"}</span>
           </p>
 
           {ownClearScore !== undefined ? (
@@ -112,10 +105,7 @@ export default function AuthorizePage() {
         {/* Authorize form */}
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="font-bold text-white mb-4">Authorise a Lender</h2>
-          <label
-            htmlFor="lender-address-input"
-            className="block text-xs text-gray-400 mb-2 uppercase tracking-widest"
-          >
+          <label htmlFor="lender-address-input" className="block text-xs text-gray-400 mb-2 uppercase tracking-widest">
             Lender Wallet Address
           </label>
           <input
@@ -123,7 +113,7 @@ export default function AuthorizePage() {
             type="text"
             placeholder="0x…"
             value={lenderAddr}
-            onChange={(e) => setLenderAddr(e.target.value)}
+            onChange={e => setLenderAddr(e.target.value)}
             className={`w-full rounded-xl border bg-black/40 px-4 py-3 font-mono text-sm outline-none transition focus:ring-2 ${
               lenderAddr && !addrValid
                 ? "border-red-500/50 focus:ring-red-500/30 text-red-400"
@@ -146,7 +136,7 @@ export default function AuthorizePage() {
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
             <h2 className="font-bold text-white mb-4">Authorised Lenders (this session)</h2>
             <div className="space-y-2">
-              {authorized.map((addr) => (
+              {authorized.map(addr => (
                 <div
                   key={addr}
                   className="flex items-center justify-between rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3"
@@ -169,9 +159,9 @@ export default function AuthorizePage() {
 
         {/* EIP-712 info */}
         <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-xs text-blue-300">
-          🔏 Authorization calls <code>FHE.allow(scoreHandle, lender)</code> on-chain, updating
-          the Zama ACL contract. Decryption via the KMS requires a valid EIP-712 signature from
-          the authorised address — no private keys are sent to the gateway.
+          🔏 Authorization calls <code>FHE.allow(scoreHandle, lender)</code> on-chain, updating the Zama ACL contract.
+          Decryption via the KMS requires a valid EIP-712 signature from the authorised address — no private keys are
+          sent to the gateway.
         </div>
 
         {/* Connected as */}
@@ -181,9 +171,7 @@ export default function AuthorizePage() {
 
         {/* Message */}
         {message && (
-          <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
-            {message}
-          </div>
+          <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-300">{message}</div>
         )}
       </div>
     </div>

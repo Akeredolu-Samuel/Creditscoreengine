@@ -130,27 +130,27 @@ pnpm start
 
 ## Environment Variables
 
-| Variable | Where | Purpose |
-|---|---|---|
-| `PRIVATE_KEY` | `packages/foundry/.env` | Deployer wallet private key |
-| `SEPOLIA_RPC_URL` | `packages/foundry/.env` | Alchemy / Infura Sepolia endpoint |
-| `ETHERSCAN_API_KEY` | `packages/foundry/.env` | Contract verification |
-| `NEXT_PUBLIC_ALCHEMY_API_KEY` | `packages/nextjs/.env.local` | Frontend RPC |
-| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `packages/nextjs/.env.local` | WalletConnect |
+| Variable                                | Where                        | Purpose                           |
+| --------------------------------------- | ---------------------------- | --------------------------------- |
+| `PRIVATE_KEY`                           | `packages/foundry/.env`      | Deployer wallet private key       |
+| `SEPOLIA_RPC_URL`                       | `packages/foundry/.env`      | Alchemy / Infura Sepolia endpoint |
+| `ETHERSCAN_API_KEY`                     | `packages/foundry/.env`      | Contract verification             |
+| `NEXT_PUBLIC_ALCHEMY_API_KEY`           | `packages/nextjs/.env.local` | Frontend RPC                      |
+| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `packages/nextjs/.env.local` | WalletConnect                     |
 
 ---
 
 ## Key FHE Concepts Used
 
-| Concept | Usage in this project |
-|---|---|
-| `euint64` | Credit factor and score storage |
-| `FHE.fromExternal()` | Verify ZK input-proof on-chain |
-| `FHE.add / mul / sub` | Weighted score arithmetic |
-| `FHE.ge()` → `ebool` | Threshold checks without revealing score |
-| `FHE.allow()` | On-chain ACL — grant lender decrypt permission |
-| `useUserDecrypt` | Off-chain EIP-712 KMS decryption |
-| `useEncrypt` | Client-side fhevmjs encryption |
+| Concept               | Usage in this project                          |
+| --------------------- | ---------------------------------------------- |
+| `euint64`             | Credit factor and score storage                |
+| `FHE.fromExternal()`  | Verify ZK input-proof on-chain                 |
+| `FHE.add / mul / sub` | Weighted score arithmetic                      |
+| `FHE.ge()` → `ebool`  | Threshold checks without revealing score       |
+| `FHE.allow()`         | On-chain ACL — grant lender decrypt permission |
+| `useUserDecrypt`      | Off-chain EIP-712 KMS decryption               |
+| `useEncrypt`          | Client-side fhevmjs encryption                 |
 
 ---
 

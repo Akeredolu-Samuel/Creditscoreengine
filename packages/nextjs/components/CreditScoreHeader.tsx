@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { RainbowKitCustomConnectButton } from "~~/components/helper/RainbowKitCustomConnectButton";
 
 const NAV = [
-  { href: "/",          label: "Dashboard" },
-  { href: "/borrower",  label: "Borrower"  },
+  { href: "/", label: "Dashboard" },
+  { href: "/borrower", label: "Borrower" },
   { href: "/authorize", label: "Authorize" },
-  { href: "/lender",    label: "Lender"    },
+  { href: "/lender", label: "Lender" },
 ];
 
 export function CreditScoreHeader() {
@@ -28,7 +28,7 @@ export function CreditScoreHeader() {
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {NAV.map((n) => (
+          {NAV.map(n => (
             <Link
               key={n.href}
               href={n.href}
@@ -49,14 +49,12 @@ export function CreditScoreHeader() {
 
       {/* Mobile nav */}
       <div className="flex md:hidden border-t border-white/5 px-4 pb-2 pt-1 gap-1">
-        {NAV.map((n) => (
+        {NAV.map(n => (
           <Link
             key={n.href}
             href={n.href}
             className={`flex-1 rounded-lg py-2 text-center text-xs font-medium transition ${
-              pathname === n.href
-                ? "bg-[#FFD208]/10 text-[#FFD208]"
-                : "text-gray-500 hover:text-white"
+              pathname === n.href ? "bg-[#FFD208]/10 text-[#FFD208]" : "text-gray-500 hover:text-white"
             }`}
           >
             {n.label}

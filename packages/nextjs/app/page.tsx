@@ -7,7 +7,7 @@ import { useCreditScoreEngine } from "~~/hooks/credit-score/useCreditScoreEngine
 
 export default function Home() {
   const { isConnected, address } = useAccount();
-  const { borrowerHasSubmitted, hasContract, ownClearScore, myScoreHandle } = useCreditScoreEngine();
+  const { borrowerHasSubmitted, ownClearScore, myScoreHandle } = useCreditScoreEngine();
 
   /* ── Score badge ─────────────────────────────────────────────── */
   const scoreNum = ownClearScore !== undefined ? Number(ownClearScore) : null;
@@ -42,7 +42,7 @@ export default function Home() {
               Powered by Zama FHE
             </p>
           </div>
-          
+
           <h1 className="mt-4 text-6xl font-black leading-[1.1] tracking-tighter md:text-8xl">
             The Future of
             <br />
@@ -50,10 +50,10 @@ export default function Home() {
               Private Trust.
             </span>
           </h1>
-          
+
           <p className="mx-auto mt-8 max-w-2xl text-lg text-gray-400 font-medium">
-            Confidential Credit Score Engine is the first Web3-native bureau that computes 
-            <span className="text-white"> encrypted creditworthiness </span> 
+            Confidential Credit Score Engine is the first Web3-native bureau that computes
+            <span className="text-white"> encrypted creditworthiness </span>
             without ever seeing your bank balance.
           </p>
 
@@ -88,11 +88,11 @@ export default function Home() {
                 <span className="text-[#FFD208]">an option. It&apos;s the standard.</span>
               </h2>
               <p className="text-gray-400 text-lg leading-relaxed">
-                Traditional credit scoring forces you to leak your entire financial life to central authorities. 
-                With <strong>Fully Homomorphic Encryption (FHE)</strong>, we perform math on ciphertexts. 
-                Your raw data stays on your machine; only the <em>encrypted result</em> moves.
+                Traditional credit scoring forces you to leak your entire financial life to central authorities. With{" "}
+                <strong>Fully Homomorphic Encryption (FHE)</strong>, we perform math on ciphertexts. Your raw data stays
+                on your machine; only the <em>encrypted result</em> moves.
               </p>
-              
+
               <div className="grid grid-cols-2 gap-4 pt-4">
                 <div className="p-4 rounded-2xl border border-white/5 bg-white/5">
                   <div className="text-2xl mb-2">🔒</div>
@@ -116,7 +116,7 @@ export default function Home() {
                   <p>0xa12...ef0: COMPUTE_WEIGHTED_SUM (Running...)</p>
                   <p className="text-white/60">0x551...33b: OUTPUT_SCORE_HANDLE (Ready)</p>
                 </div>
-                
+
                 <div className="mt-8 flex justify-center">
                   <div className="relative">
                     <div className="w-32 h-32 rounded-full border-2 border-dashed border-[#FFD208]/30 animate-[spin_10s_linear_infinite]" />
@@ -125,7 +125,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-8 text-center">
                   <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Encrypted State</p>
                   <p className="text-xl font-mono mt-1 text-[#FFD208]">0x...8F72A</p>
@@ -211,8 +211,8 @@ export default function Home() {
                 Confidential Credit Engine
               </h3>
               <p className="mt-4 text-gray-500 max-w-sm">
-                Built for the Zama Builder Track 2026. Leveraging TFHE-rs to bring institutional-grade 
-                privacy to decentralized finance.
+                Built for the Zama Builder Track 2026. Leveraging TFHE-rs to bring institutional-grade privacy to
+                decentralized finance.
               </p>
             </div>
             <div>
@@ -227,9 +227,21 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-white text-sm mb-4">Links</h4>
               <ul className="text-gray-500 text-sm space-y-2">
-                <li><Link href="/borrower" className="hover:text-white">Borrower Portal</Link></li>
-                <li><Link href="/lender" className="hover:text-white">Lender Portal</Link></li>
-                <li><Link href="/authorize" className="hover:text-white">Authorizations</Link></li>
+                <li>
+                  <Link href="/borrower" className="hover:text-white">
+                    Borrower Portal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/lender" className="hover:text-white">
+                    Lender Portal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/authorize" className="hover:text-white">
+                    Authorizations
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -264,20 +276,18 @@ function StatTile({
   return (
     <div
       className={`relative group rounded-3xl border p-6 transition-all duration-300 ${
-        highlight 
-          ? "border-[#FFD208]/30 bg-[#FFD208]/5 shadow-[0_0_20px_rgba(255,210,8,0.05)]" 
+        highlight
+          ? "border-[#FFD208]/30 bg-[#FFD208]/5 shadow-[0_0_20px_rgba(255,210,8,0.05)]"
           : "border-white/5 bg-white/2 hover:border-white/10"
       }`}
     >
       <div className="flex items-start justify-between">
         <span className="text-3xl">{icon}</span>
-        {highlight && (
-          <div className="h-2 w-2 rounded-full bg-[#FFD208] animate-pulse" />
-        )}
+        {highlight && <div className="h-2 w-2 rounded-full bg-[#FFD208] animate-pulse" />}
       </div>
       <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">{label}</p>
       <p className={`mt-2 text-2xl font-black ${valueClass ?? "text-white"}`}>{value}</p>
-      
+
       {/* Decorative hover effect */}
       <div className="absolute bottom-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
         <div className="h-1 w-8 bg-[#FFD208]/20 rounded-full" />
