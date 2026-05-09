@@ -86,7 +86,7 @@ export const useCreditScoreEngine = () => {
   // ── ACL & decrypt (own score) ──────────────────────────────────────────────
   const { mutate: allow, isPending: isAllowing } = useAllow();
   const { data: isAllowed } = useIsAllowed({
-    contractAddresses: contractAddress ? [contractAddress] : [],
+    contractAddresses: [contractAddress || "0x0000000000000000000000000000000000000000"],
   });
 
   const ownDecryptHandles = useMemo(() => {
@@ -260,7 +260,7 @@ export const useCreditScoreEngine = () => {
 
   // ── Check lender authorization ────────────────────────────────────────────
   const checkLenderAuth = useCallback(
-    async (_borrower: `0x${string}`, _lender: `0x${string}`) => {
+    async () => {
       // Quick read via the result refetch pattern
       return lenderScoreResult
         .refetch()
