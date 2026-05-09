@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   },
   webpack: config => {
     config.externals.push("pino-pretty", "lokijs", "encoding");
+    config.module = {
+      ...config.module,
+      exprContextCritical: false,
+    };
     return config;
   },
 };
