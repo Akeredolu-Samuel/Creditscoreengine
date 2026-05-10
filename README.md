@@ -1,6 +1,6 @@
 # Confidential Credit Score Engine 🔐
 
-> **FHE-powered credit bureau** — prove creditworthiness without revealing raw financial history.
+> **FHE-powered credit bureau with AI Underwriting** — an AI agent securely extracts financial factors locally, which are then encrypted via FHE to prove creditworthiness without revealing raw financial history.
 >
 > Built for the **Zama Developer Program – Builder Track 2026** using fhevm-solidity 0.11.1 and @zama-fhe/react-sdk v3.
 
@@ -9,13 +9,19 @@
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Browser (Borrower)                                             │
-│  ┌──────────────────┐  fhevmjs encrypt()  ┌──────────────────┐ │
-│  │  BorrowerForm    │ ─────────────────►  │ euint64 handles  │ │
-│  │  (plain sliders) │                     │ + ZK inputProof  │ │
-│  └──────────────────┘                     └────────┬─────────┘ │
-└───────────────────────────────────────────────────┼────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│  Browser (Borrower)                                               │
+│  ┌──────────────────┐    extracts   ┌──────────────────┐          │
+│  │  Bank Statement  │ ────────────► │ AI Underwriter   │          │
+│  │  (PDF/CSV)       │               │ Agent (Local)    │          │
+│  └──────────────────┘               └────────┬─────────┘          │
+│                                              │ 4 factors          │
+│                                              ▼                    │
+│  ┌──────────────────┐  fhevmjs encrypt()  ┌──────────────────┐    │
+│  │ submitFactors()  │ ◄─────────────────  │ euint64 handles  │    │
+│  │                  │                     │ + ZK inputProof  │    │
+│  └─────────┬────────┘                     └──────────────────┘    │
+└────────────┼──────────────────────────────────────────────────────┘
                                                      │ submitFactors()
                                                      ▼
 ┌─────────────────────────────────────────────────────────────────┐

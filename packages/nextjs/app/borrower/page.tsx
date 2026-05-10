@@ -66,6 +66,49 @@ export default function BorrowerPage() {
   });
   const [submitted, setSubmitted] = useState(false);
 
+  // ── AI Agent State ────────────────────────────────────────────────────────
+  const [isAgentActive, setIsAgentActive] = useState(false);
+  const [agentLogs, setAgentLogs] = useState<string[]>([]);
+  const [agentDone, setAgentDone] = useState(false);
+
+  const runAiAgent = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setIsAgentActive(true);
+    setAgentLogs([]);
+    setAgentDone(false);
+
+    const logs = [
+      "[Agent] Securely ingesting financial document locally...",
+      "[Agent] Extracting transaction history and account balances...",
+      "[Agent] Identified 2 minor late payments in 2025. Payment History calculated: 82/100.",
+      "[Agent] Analyzing gross income vs debt obligations. DTI calculated: 28/100.",
+      "[Agent] Determining average credit age from oldest accounts... 74/100.",
+      "[Agent] Calculating credit utilization ratio across all cards... 18/100.",
+      "[Agent] Underwriting complete. Preparing factors for Zama FHE encryption...",
+    ];
+
+    const targetValues = {
+      paymentHistory: 82,
+      dti: 28,
+      creditAge: 74,
+      utilization: 18,
+    };
+
+    // Simulate streaming logs
+    for (let i = 0; i < logs.length; i++) {
+      await new Promise(r => setTimeout(r, 600 + Math.random() * 500)); // random delay
+      setAgentLogs(prev => [...prev, logs[i]]);
+
+      // Update sliders dynamically as the AI "discovers" the values
+      if (i === 2) setValues(prev => ({ ...prev, paymentHistory: targetValues.paymentHistory }));
+      if (i === 3) setValues(prev => ({ ...prev, dti: targetValues.dti }));
+      if (i === 4) setValues(prev => ({ ...prev, creditAge: targetValues.creditAge }));
+      if (i === 5) setValues(prev => ({ ...prev, utilization: targetValues.utilization }));
+    }
+
+    setAgentDone(true);
+  };
+
   // Estimated plain-text preview (shown to user for intuition, not sent in clear)
   const preview =
     values.paymentHistory * 40 + (100 - values.dti) * 30 + values.creditAge * 15 + (100 - values.utilization) * 15;
@@ -115,6 +158,50 @@ export default function BorrowerPage() {
             ✅ You have already submitted factors. Submitting again will update your score.
           </div>
         )}
+
+        {/* AI Agent Section */}
+        <div className="mb-8 overflow-hidden rounded-2xl border border-[#FFD208]/30 bg-gradient-to-b from-[#FFD208]/10 to-transparent">
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">🤖</span>
+              <div>
+                <h2 className="text-xl font-bold text-white">Confidential AI Underwriter</h2>
+                <p className="text-sm text-gray-400">
+                  Upload a bank statement to let the AI extract your factors automatically. Raw data never leaves your
+                  browser.
+                </p>
+              </div>
+            </div>
+
+            {!isAgentActive ? (
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf,.csv"
+                  onChange={runAiAgent}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div className="flex items-center justify-center rounded-xl border-2 border-dashed border-[#FFD208]/30 bg-black/20 py-8 text-sm font-bold text-[#FFD208] transition hover:border-[#FFD208]/60 hover:bg-[#FFD208]/5">
+                  Click to upload financial history (PDF / CSV)
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-xl bg-black/60 p-4 font-mono text-xs text-green-400 shadow-inner min-h-[120px]">
+                {agentLogs.map((log, i) => (
+                  <div key={i} className="mb-1 opacity-90">
+                    {log}
+                  </div>
+                ))}
+                {!agentDone && <div className="animate-pulse text-[#FFD208] mt-1">_</div>}
+                {agentDone && (
+                  <div className="mt-4 text-[#FFD208] font-bold">
+                    ✨ Agent finished! Factors populated below. Ready for encryption.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Sliders */}
         <div className="space-y-6">

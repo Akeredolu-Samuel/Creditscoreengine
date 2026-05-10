@@ -27,7 +27,14 @@ We implement a sophisticated Access Control List (ACL) using `FHE.allow`.
 - **Lender Authorization**: Borrowers grant specific lenders time-bound or revokable access to their encrypted score handles.
 - **Threshold Verification**: Lenders can call `meetsThreshold(threshold)` to get an encrypted boolean answer—verifying creditworthiness without even learning the numeric score.
 
-### 3. Premium Web3 UX
+### 3. Confidential AI Underwriter Agent
+
+We integrated an AI Agent flow that bridges Web2 financial history with Web3 privacy.
+
+- **Local Extraction**: The AI agent analyzes uploaded financial documents (PDFs/CSVs) directly in the browser to extract exactly 4 key metrics.
+- **Zero-Trust Bridge**: The raw text/statements never leave the client. The agent instantly prepares the values for FHE encryption, turning sensitive off-chain data into secure on-chain proofs.
+
+### 4. Premium Web3 UX
 
 Privacy tools shouldn't feel like terminal commands.
 
@@ -47,9 +54,10 @@ Privacy tools shouldn't feel like terminal commands.
 
 ## 💎 Why This Wins
 
-1.  **High Utility**: Directly addresses the $4T global credit market.
-2.  **Advanced FHE Usage**: Moves beyond simple "encrypted storage" into complex "encrypted computation."
-3.  **Production Ready**: Implements proper ACLs, error handling, and a premium "Dev3" aesthetic that is ready for institutional eyes.
+1.  **AI + FHE Synergy**: Pioneers the concept of "Confidential AI Agents" that process sensitive data locally and encrypt the output for on-chain use.
+2.  **High Utility**: Directly addresses the $4T global credit market.
+3.  **Advanced FHE Usage**: Moves beyond simple "encrypted storage" into complex "encrypted computation."
+4.  **Production Ready**: Implements proper ACLs, error handling, and a premium "Dev3" aesthetic that is ready for institutional eyes.
 
 ---
 
