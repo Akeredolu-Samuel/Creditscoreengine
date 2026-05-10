@@ -161,12 +161,12 @@ try {
   /* not present yet – that's fine */
 }
 
-// Placeholder – replace address + deployedOnBlock after `pnpm deploy:sepolia`
+// Deployed on Sepolia – 2026-05-09
 const REMOTE: Record<number, ContractDeployment> = {
   11155111: {
     address: "0x02DF09970f298c26B703637A863c98D850258a70",
     abi: CreditScoreEngineABI,
-    deployedOnBlock: 0,
+    deployedOnBlock: 10825974,
   },
 };
 
